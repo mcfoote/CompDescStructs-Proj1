@@ -11,6 +11,12 @@ using std::stack;
 int numVar;
 bool a, b, c, d, e;
 
+void evaluator();
+void getVar();
+void getVal();
+void validateVal(bool in);
+void getExp();
+
 int main() {
 
     cout << "Logical Expressions Evaluator" << endl;
@@ -22,7 +28,7 @@ int main() {
 
 }
 
-static void evaluator() {
+void evaluator() {
 
     cout << "Enter the number of variables in the expression: ";
 
@@ -38,7 +44,7 @@ static void evaluator() {
 
 }
 
-static void getVar() {
+void getVar() {
 
     while(true) {
 
@@ -57,7 +63,7 @@ static void getVar() {
 
 }
 
-static void getVal() {
+void getVal() {
 
     int temp = 1;
 
@@ -92,13 +98,13 @@ static void getVal() {
 
 }
 
-static void validateVal(bool in) {
+void validateVal(bool in) {
 
     while(true) {
         cin >> in;
         if(cin.fail()) {
             cin.clear();
-            cout << endl << "Invalid input please enter true or false";
+            cout << endl << "Invalid input please enter true or false" << endl;
         } else if(in == true || in == false) {
             break;
         }
@@ -106,7 +112,7 @@ static void validateVal(bool in) {
 
 }
 
-static void getExp() {
+void getExp() {
 
 }
    
