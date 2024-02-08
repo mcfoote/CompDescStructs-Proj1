@@ -141,6 +141,11 @@ void getExp() {
 
     vector<string> tokens = tokenize(expression);
 
+    if (!validateExpression(tokens)) {
+        cout << "Invalid expression. Enter again." << endl;
+        return;
+    }
+
     //test
     for(const string &token : tokens) {
         cout << token << endl;
@@ -180,5 +185,17 @@ bool isTokenValid(const string& token) {
 
     return false;
 
+}
+
+bool validateExpression(const vector<string>& tokens) {
+
+    for (const string& token : tokens) {
+        if (!isTokenValid(token)) {
+            return false;
+        }
+    }
+
+
+    return true;
 }
    
