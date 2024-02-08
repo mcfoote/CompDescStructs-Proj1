@@ -27,6 +27,9 @@ void validateVal(bool &in);
 void getExp();
 vector<string> tokenize(const string &expression);
 bool isTokenValid(const string& token);
+bool validateExpression(const vector<string>& tokens);
+bool evalExpression(const vector<string>& tokens);
+bool getTokenVal(const string& token);
 
 int main() {
 
@@ -146,10 +149,8 @@ void getExp() {
         return;
     }
 
-    //test
-    for(const string &token : tokens) {
-        cout << token << endl;
-    }
+    bool result = evalExpression(tokens);
+    cout << "The value of the given logical expression is " << (result ? "true" : "false") << "." << endl;
 
 
 }
@@ -171,15 +172,15 @@ vector<string> tokenize(const string &expression) {
 
 bool isTokenValid(const string& token) {
     
-    const vector<string> validVars = {"a", "b", "c", "d", "e"};
+    const vector<string> validVars = {"a", "~a", "b", "~b", "c", "~c", "d", "~d", "e", "~e"};
 
-    for (int i = 0; i < numVar; ++i) {
+    for (int i = 0; i < numVar*2; ++i) {
         if (token == validVars[i]) {
             return true;  
         }
     }
 
-    if (token == "/\\" || token == "\\/" || token == "~") {
+    if (token == "/\\" || token == "\\/") {
         return true;
     }
 
@@ -197,5 +198,38 @@ bool validateExpression(const vector<string>& tokens) {
 
 
     return true;
+    
 }
    
+bool evalExpression(const vector<string>& tokens) {
+
+    if (tokens.empty()) return false; 
+
+    bool result = getTokenVal(tokens[0]);
+
+    for (size_t i = 1; i < tokens.size(); i += 2) {
+        if (i + 1 >= tokens.size()) break; 
+
+        bool operand = getTokenVal(tokens[i + 1]);
+        if (tokens[i] == "/\\") { 
+            result &= operand;
+        } else if (tokens[i] == "\\/") { 
+            result |= operand;
+        }
+    }
+
+    return result;
+
+}
+
+bool getTokenVal(const string& token) {
+    
+    if (token == "a" || token == "~a") return (token[0] == '~') ? !a : a;
+    if (token == "b" || token == "~b") return (token[0] == '~') ? !b : b;
+    if (token == "c" || token == "~c") return (token[0] == '~') ? !c : c;
+    if (token == "d" || token == "~d") return (token[0] == '~') ? !d : d;
+    if (token == "e" || token == "~e") return (token[0] == '~') ? !e : e;
+
+    return false; 
+
+}
