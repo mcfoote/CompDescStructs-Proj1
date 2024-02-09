@@ -7,7 +7,6 @@
 */
 #include<iostream>
 #include<string>
-#include<stack>
 #include<limits>
 #include<algorithm>
 #include<vector>
@@ -18,7 +17,6 @@ using std::string;
 using std::cout;
 using std::cin;
 using std::endl;
-using std::stack;
 using std::getline;
 using std::vector;
 
@@ -95,23 +93,23 @@ void getVal() {
 
         switch(temp) {
             case 1:
-                cout << "a: " << endl;
+                cout << "a: ";
                 validateVal(a);
                 break;
             case 2:
-                cout << "b: " << endl;
+                cout << endl << "b: ";
                 validateVal(b);
                 break;
             case 3:
-                cout << "c: " << endl;
+                cout << endl << "c: ";
                 validateVal(c);
                 break;
             case 4:
-                cout << "d: " << endl;
+                cout << endl << "d: ";
                 validateVal(d);
                 break;
             case 5:
-                cout << "e: " << endl;
+                cout << endl << "e: ";
                 validateVal(e);
                 break;
         }
@@ -141,7 +139,7 @@ void validateVal(bool &in) {
             break;
 
         } else {
-            cout << endl << "Invalid input. Please enter 'true' or 'false': ";
+            cout << endl << "Invalid value. Enter 'true' or 'false': " << endl;
             cin.clear();
         }
     }
@@ -152,20 +150,24 @@ void validateVal(bool &in) {
 
 //Handles input of logical expression and passes off to the eval function.
 void getExp() {
+    
+    bool validExpression = false;
+    vector<string> tokens;
 
-    string expression;
-    getline(cin, expression);
+    // Loop until a valid expression is entered
+    while (!validExpression) {
+        string expression;
+        getline(cin >> std::ws, expression); // '>> std::ws' discards leading whitespace
 
-    // Calls helper to tokenize string input
-    vector<string> tokens = tokenize(expression);
+        tokens = tokenize(expression);
+        validExpression = validateExpression(tokens);
 
-    //Check for valid expressions
-    if (!validateExpression(tokens)) {
-        cout << "Invalid expression. Enter again." << endl;
-        cin.clear();
-        getExp(); // restart expression input if failed.
+        if (!validExpression) {
+            cout << "Invalid expression. Enter again." << endl;
+        }
     }
 
+    // Calls eval helper
     bool result = evalExpression(tokens);
     cout << "The value of the given logical expression is " << (result ? "true" : "false") << "." << endl;
 
@@ -210,16 +212,29 @@ bool isTokenValid(const string& token) {
 
 // Wrapper function calls helper function on each token in the expression.
 bool validateExpression(const vector<string>& tokens) {
+    if (tokens.empty()) return false; // Empty expression is invalid.
 
-    for (const string& token : tokens) {
-        if (!isTokenValid(token)) {
+    // Check first.
+    if (tokens.front() == "/\\" || tokens.front() == "\\/") 
+        return false;
+
+    // Check last.
+    if (tokens.back() == "/\\" || tokens.back() == "\\/")
+        return false;
+
+    // Ensure there are no consecutive binary operators and that every binary operator is flanked by valid operands.
+    for (int i = 0; i < tokens.size(); ++i) {
+        if (!isTokenValid(tokens[i]))
             return false;
+
+        // Check for consecutive binary operators
+        if ((tokens[i] == "/\\" || tokens[i] == "\\/") && (i + 1 < tokens.size())) {
+            if (tokens[i + 1] == "/\\" || tokens[i + 1] == "\\/") 
+                return false;
         }
     }
 
-
     return true;
-
 }
 
 // Calculates the expressions final truth value.
@@ -230,7 +245,7 @@ bool evalExpression(const vector<string>& tokens) {
     bool result = getTokenVal(tokens[0]);
 
     // Iterates through the expression and calculates value.
-    for (size_t i = 1; i < tokens.size(); i += 2) {
+    for (int i = 1; i < tokens.size(); i += 2) {
         if (i + 1 >= tokens.size()) break; 
 
         bool operand = getTokenVal(tokens[i + 1]);
