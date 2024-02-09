@@ -2,7 +2,7 @@
     Class: 314 Wed 1:00 pm Winter
     Programmer: Mitchell Foote
     Description: A CLI program that takes input on the desired number of variables, their truth values, and a logical expression using
-    these variables and outputs the expressions final truth value to the terminal.
+    these variables and outputs the expressions final truth value to the terminal. The program is robust and can handle invalid input without crashing.
 
 */
 #include<iostream>
